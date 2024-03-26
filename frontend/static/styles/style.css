@@ -1,0 +1,14 @@
+html {
+    background-color: rgb(53, 53, 53);
+}
+
+h1 {
+    background-color: black;
+    color: white;
+    display: inline-block;
+    padding: 10px;
+    margin: 10px;
+    border-style: solid;
+    border-radius: 5px;
+    border-color: magenta;
+}
