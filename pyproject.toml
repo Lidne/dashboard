@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "dashboard"
+version = "0.1"
+description = "Project for monitoring finances"
+authors = ["Lidne <play.gt.play@yandex.ru>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "3.11.4"
+fastapi = "^0.110.1"
+sqlalchemy = "^2.0.29"
+uvicorn = "^0.29.0"
+flake8 = "^7.0.0"
+black = "^24.3.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
