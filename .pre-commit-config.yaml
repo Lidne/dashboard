@@ -1,0 +1,40 @@
+repos:
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v4.4.0
+  hooks:
+  - id: check-json
+  - id: check-toml
+  - id: check-yaml
+  - id: check-merge-conflict
+  - id: debug-statements
+- repo: https://github.com/PyCQA/isort
+  rev: 5.12.0
+  hooks:
+  - id: isort
+    args: [--filter-files, src/]
+- repo: https://github.com/psf/black
+  rev: 23.3.0
+  hooks:
+  - id: black
+    types: [python]
+    args: [--check,--config=pyproject.toml]
+- repo: https://github.com/PyCQA/flake8
+  rev: 6.0.0
+  hooks:
+  - id: flake8
+    types: [python]
+    exclude: frontend
+    args: [--config=pyproject.toml]
+- repo: local
+  hooks:
+    - id: mypy
+      name: mypy
+      entry: "mypy"
+      language: system
+      exclude: frontend
+      # run if any Python file is changed
+      types: [python]
+      # mypy will always check all files
+      pass_filenames: false
+      # use require_serial so that script is only called once per commit
+      require_serial: true
