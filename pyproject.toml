@@ -16,7 +16,6 @@ black = "^24.3.0"
 
 [tool.mypy]
 mypy_path = "./src"
-follow_imports = "silent"
 strict_optional = true
 warn_redundant_casts = true
 warn_unused_ignores = true

@@ -12,13 +12,6 @@ repos:
   hooks:
   - id: isort
     args: [--filter-files, src/]
-- repo: local
-  hooks:
-    - id: black
-      name: black
-      entry: poetry run black
-      language: system
-      types: [file, python]
 - repo: https://github.com/PyCQA/flake8
   rev: 6.0.0
   hooks:
@@ -26,3 +19,12 @@ repos:
     types: [python]
     exclude: frontend
     args: [--config=pyproject.toml, --max-line-length=100]
+- repo: local
+  hooks:
+    - id: mypy
+      name: mypy
+      entry: "poetry run mypy"
+      language: python
+      types: [python]
+      require_serial: true
+      verbose: true

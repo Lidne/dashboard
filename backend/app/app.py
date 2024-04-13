@@ -16,6 +16,6 @@ async def read_item(item_id: int, q: Union[str, None] = None) -> dict[str, Any]:
 
 
 @app.get(f"/asnsn/asdasd/{id}")
-async def id(id: int, aas: str):
+async def idd(id: int, aas: str):
 
     return {"name": "astra"}
