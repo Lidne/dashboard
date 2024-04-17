@@ -14,8 +14,11 @@ uvicorn = "^0.29.0"
 flake8 = "^7.0.0"
 black = "^24.3.0"
 requests = "^2.31.0"
+bs4 = "^0.0.2"
+lxml = "^5.2.1"
 mypy = "^1.9.0"
 types-requests = "^2.31.0.20240406"
+types-beautifulsoup4 = "^4.12.0.20240229"
 
 [tool.mypy]
 mypy_path = "./src"
@@ -41,6 +44,9 @@ flake8 = "^7.0.0"
 pre-commit = "^3.7.0"
 black = "^24.3.0"
 mypy = "^1.9.0"
+
+[tool.poetry.group.dev.dependencies]
+setuptools = "^69.2.0"
 
 [build-system]
 requires = ["poetry-core"]
