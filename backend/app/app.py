@@ -1,4 +1,5 @@
-from typing import Union
+import json
+from typing import Any, Union
 from fastapi import FastAPI
 from parsing_news import news_list
 
@@ -14,3 +15,9 @@ async def new_list(from_: str, to_: str = "") -> dict:
 @app.get("/items/{item_id}")
 async def read_item(item_id: Union[int, None] = None, q: Union[str, None] = None):
     return {"item_id": item_id, "q": q}
+
+
+@app.get("/iss/engines.json")
+async def read_root():
+    """"""
+    return {"engines"}
