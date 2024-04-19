@@ -30,7 +30,7 @@ const products = [
   },
   {
     name: "Security",
-    description: "Your customers’ data will be safe and secure",
+    description: "Your customers' data will be safe and secure",
     href: "#",
     icon: FingerPrintIcon,
   },
@@ -62,10 +62,10 @@ function Header() {
   return (
     <header className="bg-white">
       <nav
-        className="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8"
+        className="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8 border-b-3 border-black"
         aria-label="Global"
       >
-        <div className="flex lg:flex-1">
+        <div className="flex lg:flex-1 flex-row ">
           <a href="#" className="-m-1.5 p-1.5">
             <span className="sr-only">Your Company</span>
             <img
@@ -74,6 +74,7 @@ function Header() {
               alt=""
             />
           </a>
+          <h1>StockView</h1>
         </div>
         <div className="flex lg:hidden">
           <button
@@ -86,7 +87,7 @@ function Header() {
           </button>
         </div>
         <Popover.Group className="hidden lg:flex lg:gap-x-12">
-          <Popover className="relative">
+          {/* <Popover className="relative">
             <Popover.Button className="flex items-center gap-x-1 text-sm font-semibold leading-6 text-gray-900">
               Product
               <ChevronDownIcon
@@ -147,21 +148,23 @@ function Header() {
                 </div>
               </Popover.Panel>
             </Transition>
-          </Popover>
-
+          </Popover> */}
           <a href="#" className="text-sm font-semibold leading-6 text-gray-900">
-            Features
+            Главная
           </a>
           <a href="#" className="text-sm font-semibold leading-6 text-gray-900">
-            Marketplace
+            Акции
           </a>
           <a href="#" className="text-sm font-semibold leading-6 text-gray-900">
-            Company
+            Новости
+          </a>
+          <a href="#" className="text-sm font-semibold leading-6 text-gray-900">
+            О нас
           </a>
         </Popover.Group>
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
           <a href="#" className="text-sm font-semibold leading-6 text-gray-900">
-            Log in <span aria-hidden="true">&rarr;</span>
+            Войти <span aria-hidden="true">&rarr;</span>
           </a>
         </div>
       </nav>
