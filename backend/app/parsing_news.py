@@ -17,18 +17,18 @@ def news_list(from_data=None, to_data=""):
     responce = requests.get(link).text
     soup = BeautifulSoup(responce, "lxml")
     block = soup.find("div", id="content")
-    if block.find("div", id="pagination") == -1:
+    # если нету новостей, то выполняется следующий if
+    if not block.find("table", class_="simple-little-table trades-table events"):
+        news.append(
+            {
+                "title": "NOT FOUND",
+                "link": "к сожалаению, нет новостей за данные период времени",
+            }
+        )
+        return news
+    if not block.find("div", id="pagination"):
         count_page = 1
-    if block.find("div", id="pagination") != -1:
-        # если нету новостей, то выполняется следующий if
-        if not block.find("table", class_="simple-little-table trades-table events"):
-            news.append(
-                {
-                    "title": "NOT FOUND",
-                    "link": "к сожалаению, нет новостей за данные период времени",
-                }
-            )
-            return news
+    if block.find("div", id="pagination"):
         x = block.find_all("a", class_="page gradient last")[1].get("href")
         pos = x.find("page")
         b = x[pos::].rstrip("/")
@@ -55,3 +55,11 @@ def news_list(from_data=None, to_data=""):
             news.append({"title": text_new, "link": link_main + link_new})
         number_page += 1
     return news
+
+
+def main():
+    return
+
+
+if __name__ == "__main__":
+    main()
