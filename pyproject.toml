@@ -44,8 +44,6 @@ flake8 = "^7.0.0"
 pre-commit = "^3.7.0"
 black = "^24.3.0"
 mypy = "^1.9.0"
-
-[tool.poetry.group.dev.dependencies]
 setuptools = "^69.2.0"
 
 [build-system]
