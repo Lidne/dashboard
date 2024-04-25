@@ -5,6 +5,7 @@ import Deals from "./components/Deals.jsx";
 import Tops from "./components/Tops.jsx";
 
 function App() {
+  
   return (
     <>
       <Header />

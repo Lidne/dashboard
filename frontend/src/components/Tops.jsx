@@ -9,22 +9,14 @@ const Tops = () => {
   const fetchTops = () => {
     const date = new Date();
     date.setDate(date.getDate() - 1);
-    // console.log(
-    //   tops
-    //     .filter((item) => (item[11] - item[6]) > 0)
-    //     .map((item) => [item[3], item[11], item[6]])
-    // );
     axios
       .get(
         "https://iss.moex.com/iss/history/engines/stock/markets/shares/securities.json?date=" +
           date.toISOString().split("T")[0]
       )
       .then((r) => {
-        // console.log(r.data.history.data);
         setTops(r.data.history.data);
-        // setTops(r.data.history.data.filter((item) => (item[11] - item[6]) > 0));
       });
-    // console.log(1);
   };
 
   useEffect(() => {

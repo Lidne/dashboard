@@ -20,6 +20,9 @@ mypy = "^1.9.0"
 types-requests = "^2.31.0.20240406"
 types-beautifulsoup4 = "^4.12.0.20240229"
 
+[tool.poetry.scripts]
+start = "backend.server:start"
+
 [tool.mypy]
 mypy_path = "./src"
 strict_optional = true
@@ -31,6 +34,7 @@ no_implicit_reexport = true
 
 [tool.flake8]
 max-line-length = 100
+extend-ignore="E402"
 
 [tool.black]
 line-length = 100

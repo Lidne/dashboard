@@ -69,8 +69,13 @@ function Header() {
           <a href="#" className="-m-1.5 p-1.5">
             <span className="sr-only">Your Company</span>
             <img
-              className="h-8 w-auto"
-              src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
+              className="h-8 w-auto hidden dark:block"
+              src="white-theme-2.svg"
+              alt=""
+            />
+            <img
+              className="h-8 w-auto block dark:hidden"
+              src="dark-theme-2.svg"
               alt=""
             />
           </a>
@@ -181,7 +186,7 @@ function Header() {
               <span className="sr-only">Your Company</span>
               <img
                 className="h-8 w-auto"
-                src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
+                src="logo.svg"
                 alt=""
               />
             </a>
