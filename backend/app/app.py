@@ -1,6 +1,7 @@
 import sys
+import os
 
-sys.path.insert(0, 'C:\\Users\\george\\Projects\\WebProjects\\dashboard\\backend\\app')
+sys.path.insert(0, os.path.join(os.getcwd(), "app"))
 
 from typing import Union
 
@@ -26,7 +27,8 @@ app.add_middleware(
 
 
 @app.get("/news")
-async def new_list(from_: str, to_: str = "") -> dict[str, list[dict]]:
+async def 
+new_list(from_: str, to_: str = "") -> dict[str, list[dict]]:
     dict_news = {"NEWS": news_list(from_, to_)}
     return dict_news
 
