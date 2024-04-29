@@ -25,9 +25,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 asd
-
+dadasadsads
 @app.get("/ne ws")
-async def 
+async d
+ef 
 new_list(from_: str, to_: str = "") -> dict[str, list[dict]]:
     dict_news = {"NEWS": news_list(from_, to_)}
     return dict_news
