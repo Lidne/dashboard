@@ -1,6 +1,6 @@
 import { Spin } from "antd";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 const News = () => {
   const [news, setNews] = useState([]);
@@ -16,7 +16,6 @@ const News = () => {
   const fetchNews = () => {
     axios.get("http://127.0.0.1/news?from_=" + dateString).then((r) => {
       setNews(r.data.NEWS);
-      console.log(r.data.NEWS.slice(0, 5));
     });
   };
 
@@ -27,9 +26,9 @@ const News = () => {
   return (
     <div className="flex flex-col space-y-4">
       <div>Последние новости</div>
-      <div className="flex flex-col space-y-2 divide-x-0 divide-y-2 divide-solid ">
+      <div className="flex flex-col space-y-2 divide-x-0 divide-y-2 divide-solid">
         {news.length === 0 ? <Spin /> : news.slice(0, 5).map((item) => (
-          <div>
+          <div key={1}>
             <div>{dateString}</div>
             <div>{item.title}</div>
           </div>

@@ -1,5 +1,5 @@
-import { Fragment, useState } from "react";
-import { Dialog, Disclosure, Popover, Transition } from "@headlessui/react";
+import { useState } from "react";
+import { Dialog, Disclosure, Popover } from "@headlessui/react";
 import {
   ArrowPathIcon,
   Bars3Icon,
@@ -14,6 +14,7 @@ import {
   PhoneIcon,
   PlayCircleIcon,
 } from "@heroicons/react/20/solid";
+import { Link, NavLink } from "react-router-dom";
 
 const products = [
   {
@@ -67,7 +68,7 @@ function Header() {
       >
         <div className="flex lg:flex-1 flex-row ">
           <a href="#" className="-m-1.5 p-1.5">
-            <span className="sr-only">Your Company</span>
+            <span className="sr-only">StockView</span>
             <img
               className="h-8 w-auto hidden dark:block"
               src="white-theme-2.svg"
@@ -154,18 +155,30 @@ function Header() {
               </Popover.Panel>
             </Transition>
           </Popover> */}
-          <a href="#" className="text-sm font-semibold leading-6 text-gray-900">
+          <NavLink
+            to={"/"}
+            className="text-sm font-semibold leading-6 text-gray-900"
+          >
             Главная
-          </a>
-          <a href="#" className="text-sm font-semibold leading-6 text-gray-900">
+          </NavLink>
+          <NavLink
+            to={"/securities"}
+            className="text-sm font-semibold leading-6 text-gray-900"
+          >
             Акции
-          </a>
-          <a href="#" className="text-sm font-semibold leading-6 text-gray-900">
+          </NavLink>
+          <NavLink
+            to={"/news"}
+            className="text-sm font-semibold leading-6 text-gray-900"
+          >
             Новости
-          </a>
-          <a href="#" className="text-sm font-semibold leading-6 text-gray-900">
+          </NavLink>
+          <NavLink
+            to={"/about"}
+            className="text-sm font-semibold leading-6 text-gray-900"
+          >
             О нас
-          </a>
+          </NavLink>
         </Popover.Group>
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
           <a href="#" className="text-sm font-semibold leading-6 text-gray-900">
@@ -184,11 +197,7 @@ function Header() {
           <div className="flex items-center justify-between">
             <a href="#" className="-m-1.5 p-1.5">
               <span className="sr-only">Your Company</span>
-              <img
-                className="h-8 w-auto"
-                src="logo.svg"
-                alt=""
-              />
+              <img className="h-8 w-auto" src="logo.svg" alt="" />
             </a>
             <button
               type="button"
