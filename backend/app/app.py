@@ -1,7 +1,7 @@
 from fastapi import Depends, FastAPI
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from backend.app.authentication.crud import (
+from backend.app.authentication.auth import (
     register,
     cookies,
     get_user,
