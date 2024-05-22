@@ -1,13 +1,12 @@
-from fastapi import HTTPException, Response, Request
+from app.authentication.sec import pwd_context
+from app.authentication.token import signJWT
+from fastapi import HTTPException, Request, Response
+from models.models import User
+from models.schema import UserCreate, UserLogin
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.responses import JSONResponse
 from starlette.status import HTTP_400_BAD_REQUEST
-
-from backend.app.authentication.token import signJWT
-from backend.models.models import User
-from backend.models.schema import UserCreate, UserLogin
-from backend.app.authentication.sec import pwd_context
 
 
 def cookies(user_data):

@@ -12,8 +12,8 @@ const Security = () => {
         `https://iss.moex.com/iss/engines/stock/markets/shares/securities/${secId}.json`
       )
       .then((r) => {
-        console.log(r.data.securities.data);
-        setData(r.data.securities.data);
+        console.log(r.data.securities.data[1]);
+        setData(r.data.securities.data[1]);
       });
   };
 

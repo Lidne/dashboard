@@ -1,9 +1,8 @@
 import uuid
 
+from models.database import Base
+from sqlalchemy import ARRAY, Boolean, Column, Integer, String
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy import Boolean, Column, Integer, String, ARRAY
-
-from backend.models.database import Base
 
 
 class User(Base):
