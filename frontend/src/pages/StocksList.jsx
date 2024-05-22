@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { NavLink } from "react-router-dom";
-import axios from "axios";
+import React from 'react';
+
 
 const stocks = [
   {
@@ -34,25 +33,11 @@ const stocks = [
     imageUrl:
       'https://yt3.googleusercontent.com/o6fufkZmnPAhH3f4Muk-CDiEVupgo1aCN-HXYgWCVvWyxSpJ6MKKWnRVTNpUU6ZFpbgZB_aT_g=s900-c-k-c0x00ffffff-no-rj',
 
-  }]
-const Securities = () => {
-  const [securities, setSec] = useState([]);
+  }
+  
+]
 
-  const fetchSecurities = () => {
-    axios
-      .get(
-        "https://iss.moex.com/iss/engines/stock/markets/shares/securities.json"
-      )
-      .then((r) => {
-        console.log(r.data.securities.data);
-        setSec(r.data.securities.data);
-      });
-  };
-
-  useEffect(() => {
-    fetchSecurities();
-  }, []);
-
+export default function Example() {
   return (
     <ul role="list" className="divide-y divide-gray-100">
       {stocks.map((person) => (
@@ -77,8 +62,5 @@ const Securities = () => {
         </li>
       ))}
     </ul>
-  
-    );
-};
-
-export default Securities;
+  )
+}
