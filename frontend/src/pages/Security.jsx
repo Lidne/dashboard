@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import SecCard from "../components/SecCard";
 import BuyCard from "../components/BuyCard";
 import SecGraph from "../components/SecGraph";
+import Dividends from "../components/Dividends";
 
 const Security = () => {
   const { secId } = useParams();
@@ -26,10 +27,12 @@ const Security = () => {
 
   return (
     <div className="flex flex-col items-center">
-      <div className="grid grid-cols-2 gap-x-10">
+      <div className="grid grid-cols-2 gap-10 size-1/2">
         <SecCard secData={secData} />
-        <BuyCard price={secData[3]}/>
-        <SecGraph secId={secId}/>
+        <BuyCard price={secData[3]} />
+        <div className="col-span-2"><SecGraph secId={secId} /></div>
+        <h1><strong>Выплаченные дивиденды</strong></h1>
+        <div className="col-span-2"><Dividends secId={secId}/></div>
       </div>
     </div>
   );
