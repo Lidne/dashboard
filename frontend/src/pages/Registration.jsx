@@ -1,10 +1,10 @@
 import React from "react";
 import RegForm from "../components/RegForm";
 
-const Registration = () => {
+const Registration = ({setter}) => {
   return (
     <div>
-      <RegForm />
+      <RegForm setter={setter}/>
     </div>
   );
 };

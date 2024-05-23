@@ -1,9 +1,25 @@
 import React from "react";
 import { Button, Checkbox, Form, Input } from "antd";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
-const RegForm = () => {
+const RegForm = ({ setter }) => {
+  const navigate = useNavigate();
+
   const onFinish = (values) => {
-    console.log("Failed:", values);
+    axios
+      .post("http://localhost/account/register", values)
+      .then((r) => {
+        const userStr = JSON.stringify(r.data);
+        localStorage.setItem("user", userStr);
+        // console.log(r.data);
+        setter(r.data);
+
+        navigate("/");
+      })
+      .catch((error) => {
+        console.error("Login failed:", error);
+      });
   };
 
   const onFinishFailed = (errorInfo) => {
@@ -30,7 +46,7 @@ const RegForm = () => {
     >
       <Form.Item
         label="Имя"
-        name="имя"
+        name="username"
         rules={[
           {
             required: true,
@@ -56,7 +72,7 @@ const RegForm = () => {
 
       <Form.Item
         label="Пароль"
-        name="пароль"
+        name="password"
         rules={[
           {
             required: true,
@@ -67,16 +83,16 @@ const RegForm = () => {
         <Input.Password />
       </Form.Item>
 
-      <Form.Item
-        name="remember"
-        valuePropName="checked"
-        wrapperCol={{
-          offset: 8,
-          span: 16,
-        }}
-      >
-        <Checkbox>Запомнить меня</Checkbox>
-      </Form.Item>
+      {/*<Form.Item*/}
+      {/*  name="remember"*/}
+      {/*  valuePropName="checked"*/}
+      {/*  wrapperCol={{*/}
+      {/*    offset: 8,*/}
+      {/*    span: 16,*/}
+      {/*  }}*/}
+      {/*>*/}
+      {/*  <Checkbox>Запомнить меня</Checkbox>*/}
+      {/*</Form.Item>*/}
 
       <Form.Item
         wrapperCol={{

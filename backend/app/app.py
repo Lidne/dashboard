@@ -1,15 +1,16 @@
 from typing import Union
 
-from app.authentication.auth import (auth, cookie_check, cookies, get_user,
-                                     logout, register)
-from app.authentication.token import decodeJWT
-from app.parsing_news import news_list
-from app.send_EMAIL import send_email
-from fastapi import Depends, FastAPI
+from fastapi import Depends, FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from models import schema
-from models.database import get_session
 from sqlalchemy.ext.asyncio import AsyncSession
+
+from backend.app.authentication.auth import (auth, cookie_check, cookies,
+                                             get_user, logout, register)
+from backend.app.authentication.token import decodeJWT
+from backend.app.parsing_news import news_list
+from backend.app.send_EMAIL import send_email
+from backend.models import schema
+from backend.models.database import get_session
 
 app = FastAPI()
 
@@ -37,7 +38,14 @@ async def register_user(
 
 @app.get("/get_user_info_by_token")
 async def get_user(token=Depends(get_user)):
-    return decodeJWT(token)
+    try:
+        return decodeJWT(token)
+    except Exception:
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid authentication credentials",
+            headers={"WWW-Authenticate": "Bearer"}
+        )
 
 
 @app.post("/account/login")
