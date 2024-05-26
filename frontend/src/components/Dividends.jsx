@@ -10,7 +10,7 @@ const Dividends = ({ secId }) => {
         `https://iss.moex.com/iss/securities/${secId}/dividends.json?iss.meta=off`
       )
       .then((r) => {
-        console.log(r.data);
+        // console.log(r.data);
         setDivs(r.data.dividends.data);
       });
   };

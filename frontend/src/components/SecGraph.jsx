@@ -10,6 +10,10 @@ import {
   Tooltip,
   ResponsiveContainer,
   Brush,
+  ReferenceLine,
+  ScatterChart,
+  Scatter,
+  ComposedChart,
 } from "recharts";
 import axios from "axios";
 
@@ -34,6 +38,8 @@ const SecGraph = ({ secId }) => {
   const [fromDateStr, setFromDateStr] = useState(parseDate(pastDate));
   const [data, setData] = useState([]);
   const [interval, setInterval] = useState("day");
+  const [median, setMedian] = useState(0);
+  const [scatter, setScatter] = useState([]);
 
   const options = [
     { value: "minute", label: "Минута" },
@@ -41,36 +47,83 @@ const SecGraph = ({ secId }) => {
     { value: "day", label: "День" },
   ];
 
+  const calcMedian = (rawData) => {
+    const sortedPrices = [...rawData].sort((a, b) => a - b);
+    const median =
+      sortedPrices.length % 2 === 0
+        ? (sortedPrices[sortedPrices.length / 2 - 1] +
+            sortedPrices[sortedPrices.length / 2]) /
+          2
+        : sortedPrices[Math.floor(sortedPrices.length / 2)];
+    setMedian(median);
+  };
+
+  const calcScatter = (prices) => {
+    const sortedPrices = [...prices].sort((a, b) => a - b);
+
+    const q1 = sortedPrices[Math.floor(sortedPrices.length / 4)];
+    const q3 = sortedPrices[Math.ceil(sortedPrices.length * (3 / 4)) - 1];
+    const iqr = q3 - q1;
+    const lowerBound = q1 - 1.5 * iqr;
+    const upperBound = q3 + 1.5 * iqr;
+
+    const sd = prices.map((d) => {
+      if (d.uv >= lowerBound || d.uv <= upperBound) {
+        d.sc = d.uv;
+      }
+    });
+    console.log(data);
+    console.log(sd);
+    setData(sd);
+    // const outliers = prices.filter((d) => d >= lowerBound || d <= upperBound);
+    // setScatter(outliers);
+    // console.log(q1, q3, iqr, lowerBound, upperBound);
+    // console.log(outliers);
+  };
+
   const fetchData = (int) => {
     if (int === "day") {
       axios
         .get(
-          `https://iss.moex.com/iss/history/engines/stock/markets/shares/securities/${secId}.json?from=${fromDateStr}&till=${tillDateStr}&lang=ru`
+          `https://iss.moex.com/iss/history/engines/stock/markets/shares/securities/${secId}.json?from=${fromDateStr}&till=${tillDateStr}&lang=ru&iss.meta=off&history.columns=TRADEDATE,CLOSE`
         )
         .then((r) => {
-          setData(
-            r.data.history.data.map((item) => ({ name: item[1], uv: item[11] }))
-          );
+          const dt = r.data.history.data.map((item) => ({
+            name: item[0],
+            uv: item[1],
+          }));
+          calcScatter(dt);
+          const rawData = r.data.history.data.map((item) => item[1]);
+          calcMedian(rawData);
+          console.log(data);
         });
     } else if (int === "minute") {
       axios
         .get(
-          `https://iss.moex.com/iss/engines/stock/markets/shares/securities/${secId}/candles.json?iss.reverse=true&from=${fromDateStr}&till=${tillDateStr}&interval=1`
+          `https://iss.moex.com/iss/engines/stock/markets/shares/securities/${secId}/candles.json?iss.reverse=true&from=${fromDateStr}&till=${tillDateStr}&interval=1&candles.columns=end,close&iss.meta=off`
         )
         .then((r) => {
           setData(
-            r.data.candles.data.map((item) => ({ name: item[7], uv: item[1] }))
+            r.data.candles.data.reverse().map((item) => ({
+              name: item[0].slice(11),
+              uv: item[1],
+            }))
           );
+          console.log(r.data.candles.data);
         });
     } else if (int === "hour") {
       axios
         .get(
-          `https://iss.moex.com/iss/engines/stock/markets/shares/securities/${secId}/candles.json?from=${fromDateStr}&till=${tillDateStr}&interval=60`
+          `https://iss.moex.com/iss/engines/stock/markets/shares/securities/${secId}/candles.json?from=${fromDateStr}&till=${tillDateStr}&interval=60&candles.columns=end,close&iss.meta=off`
         )
         .then((r) => {
           setData(
-            r.data.candles.data.map((item) => ({ name: item[7], uv: item[1] }))
+            r.data.candles.data.reverse().map((item) => ({
+              name: item[0].slice(11),
+              uv: item[1],
+            }))
           );
+          console.log(r.data.candles.data);
         });
     }
   };
@@ -84,7 +137,7 @@ const SecGraph = ({ secId }) => {
   }, []);
 
   const onDateChange = (date, dateString) => {
-    console.log(date);
+    // console.log(date);
     setFromDate(date[0]);
     setTillDate(date[1]);
     setFromDateStr(dateString[0]);
@@ -118,21 +171,23 @@ const SecGraph = ({ secId }) => {
         />
         <RangePicker onChange={onDateChange} format={"YYYY-MM-DD"} />
       </div>
-      <ResponsiveContainer width="100%" height={300}>
-        <LineChart
-          data={data}
-          margin={{ top: 5, right: 20, bottom: 5, left: 0 }}
-        >
-          <Line type="monotone" dataKey="uv" stroke="#8884d8" dot={<></>} />
+      <ResponsiveContainer width={"100%"} height={400}>
+        <ComposedChart margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
           <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
           <XAxis dataKey="name" />
-          <YAxis />
+          <YAxis domain={["auto", "auto"]} />
+          <ReferenceLine y={median} stroke="red" />
           <Tooltip content={CustomTooltip} />
-          <Brush
-            data={data.map((item) => item.name)}
-            height={10}
+          <Line
+            data={data}
+            type="monotone"
+            dataKey="uv"
+            stroke="#8884d8"
+            dot={<></>}
           />
-        </LineChart>
+          <Scatter data={data} dataKey="sc" fill="green" />
+          <Brush data={data.map((item) => item.name)} height={10} />
+        </ComposedChart>
       </ResponsiveContainer>
     </div>
   );
