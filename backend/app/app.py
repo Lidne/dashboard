@@ -4,12 +4,13 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from backend.app.authentication.auth import (
     register,
     cookies,
-    get_user,
+    get_user_token,
     auth,
     logout,
     cookie_check,
 )
 from backend.app.authentication.token import decodeJWT
+from backend.app.portfolio.shares_operations import buy, sell, get_user_shares
 from backend.models import schema
 from backend.models.database import get_session
 from typing import Union
@@ -32,7 +33,7 @@ async def register_user(
 
 
 @app.get("/get_user_info_by_token")
-async def get_user(token=Depends(get_user)):
+async def get_user(token=Depends(get_user_token)):
     return decodeJWT(token)
 
 
@@ -50,7 +51,32 @@ async def login_user(
 async def logout_user(result=Depends(logout)):
     return result
 
-  
+
+@app.post("/portfolio/{ticker}/buy")
+async def buy_shares(
+    ticker,
+    amount: schema.SharesOperations,
+    token=Depends(get_user_token),
+    db: AsyncSession = Depends(get_session),
+):
+    return await buy(token, db, ticker, amount)
+
+
+@app.post("/portfolio/{ticker}/sell")
+async def sell_shares(
+    ticker,
+    amount: schema.SharesOperations,
+    token=Depends(get_user_token),
+    db: AsyncSession = Depends(get_session),
+):
+    return await sell(token, db, ticker, amount)
+
+
+@app.get("/portfolio/shares")
+async def get_shares(token=Depends(get_user_token), db: AsyncSession = Depends(get_session)):
+    return await get_user_shares(token, db)
+
+
 @app.get("/news")
 async def new_list(from_: str, to_: str = "") -> dict:
     dict_news = {"NEWS": news_list(from_, to_)}
