@@ -1,6 +1,6 @@
 import jwt
 
-from backend.config import SECRET_ALGORYTHM, SECRET_AUTH
+from backend.config import SECRET_AUTH, SECRET_ALGORYTHM
 
 JWT_SECRET = SECRET_AUTH
 JWT_ALGORITHM = SECRET_ALGORYTHM
@@ -19,5 +19,8 @@ def signJWT(user_data: dict):
 
 def decodeJWT(token: str) -> dict:
     """Расшифровка JWT"""
-    decoded_token = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
-    return decoded_token
+    try:
+        decoded_token = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
+        return decoded_token
+    except:
+        return "No token"
