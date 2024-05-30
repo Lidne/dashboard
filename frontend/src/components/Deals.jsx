@@ -7,15 +7,16 @@ const Deals = () => {
   const [deals, setDeals] = useState([]);
 
   const fetchDeals = () => {
-    try {
-      axios
-        .get(
-          "https://iss.moex.com/iss/engines/stock/markets/shares/trades.json?reversed=1&limit=10"
-        )
-        .then((r) => {
-          setDeals(r.data.trades.data);
-        });
-    } catch (error) {}
+    axios
+      .get(
+        "https://iss.moex.com/iss/engines/stock/markets/shares/trades.json?reversed=1&limit=10"
+      )
+      .then((r) => {
+        setDeals(r.data.trades.data);
+        // setDeals([]);
+        // console.log(r.data.trades.data);
+      });
+    // console.log(1);
   };
 
   useEffect(() => {

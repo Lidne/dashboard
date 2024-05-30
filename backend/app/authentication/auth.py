@@ -56,9 +56,7 @@ def cookie_check(request: Request):
     """Проверка наличия куки"""
     cookie = request.cookies.get("auth_token")
     if cookie is not None:
-        raise HTTPException(
-            status_code=HTTP_400_BAD_REQUEST, detail="User is already logged in"
-        )
+        raise HTTPException(status_code=HTTP_400_BAD_REQUEST, detail="User is already logged in")
     else:
         return True
 
@@ -66,13 +64,8 @@ def cookie_check(request: Request):
 async def auth(db: AsyncSession, user_data: UserLogin):
     """Вход в аккаунт пользователя"""
     user = await db.scalar(select(User).where(User.email == user_data.email))
-    if (
-        user is None
-        or pwd_context.verify(user_data.password, user.hashed_password) is False
-    ):
-        raise HTTPException(
-            status_code=HTTP_400_BAD_REQUEST, detail="Incorrect email or password"
-        )
+    if user is None or pwd_context.verify(user_data.password, user.hashed_password) is False:
+        raise HTTPException(status_code=HTTP_400_BAD_REQUEST, detail="Incorrect email or password")
     else:
         info = {
             "id": str(user.id),
