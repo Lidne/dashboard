@@ -15,7 +15,7 @@ class UserLogin(BaseModel):
     email: EmailStr
     password: str
 
-
+      
 class SharesOperations(BaseModel):
     """Количество акций, которыми хочет оперировать польщователь"""
 
