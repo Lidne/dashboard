@@ -2,7 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 
 
-def news_list(from_data=None, to_data=""):
+def news_list(from_data=None, to_data="") -> list[dict]:
     """возвращает словарь списков новостей (название и ссылку)"""
 
     news = []
