@@ -16,8 +16,8 @@ const Security = () => {
         `https://iss.moex.com/iss/engines/stock/markets/shares/securities/${secId}.json`
       )
       .then((r) => {
-        setData(r.data.securities.data.filter((row) => row[1] == "TQBR")[0]);
-        // console.log(secData);
+        console.log(r.data.securities.data[1]);
+        setData(r.data.securities.data[1]);
       });
   };
 

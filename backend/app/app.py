@@ -1,5 +1,3 @@
-import os
-import sys
 from typing import Union
 
 from fastapi.middleware.cors import CORSMiddleware
@@ -19,9 +17,13 @@ from backend.app.portfolio.shares_operations import buy, sell, get_user_shares
 from backend.models import schema
 from backend.models.database import get_session
 
-sys.path.insert(0, os.path.join(os.getcwd(), "backend", "app"))
-from parsing_news import news_list
-from send_EMAIL import send_email
+from backend.app.authentication.auth import (auth, cookie_check, cookies,
+                                             get_user, logout, register)
+from backend.app.authentication.token import decodeJWT
+from backend.app.parsing_news import news_list
+from backend.app.send_EMAIL import send_email
+from backend.models import schema
+from backend.models.database import get_session
 
 app = FastAPI()
 
@@ -48,9 +50,16 @@ async def register_user(
 
 
 @app.get("/get_user_info_by_token")
-async def get_user(token=Depends(get_user_token)):
-    return decodeJWT(token)
 
+async def get_user(token=Depends(get_user)):
+    try:
+        return decodeJWT(token)
+    except Exception:
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid authentication credentials",
+            headers={"WWW-Authenticate": "Bearer"}
+        )
 
 @app.post("/account/login")
 async def login_user(
