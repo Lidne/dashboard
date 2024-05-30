@@ -10,7 +10,7 @@ const Home = () => {
           <Tops />
         </div>
         <div className="flex flex-col items-center">
-          <div className="flex flex-row space-x-12 mt-12 items-center">
+          <div className="flex flex-wrap flex-row space-x-12 mt-12 items-center">
             <Deals />
             <News />
           </div>
