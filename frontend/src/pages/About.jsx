@@ -5,7 +5,7 @@ const About = () => {
     <div class="bg-gray-100 pt-6">
       <div class="max-w-3xl mx-auto p-6 bg-white rounded-lg shadow-md">
         <h1 class="text-4xl font-bold text-center text-gray-800">
-          About StockView
+          О нас
         </h1>
         <p class="mt-6 text-lg text-gray-700">
           Добро пожаловать в <strong>StockView</strong>, ваш главный ресурс для

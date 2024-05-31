@@ -15,7 +15,7 @@ import {
   Scatter,
   ComposedChart,
 } from "recharts";
-import axios from "axios";
+import axios from "../utils/axios";
 
 const parseDate = (date) => {
   // говнокодик)
@@ -88,14 +88,12 @@ const SecGraph = ({ secId }) => {
           `https://iss.moex.com/iss/history/engines/stock/markets/shares/securities/${secId}.json?from=${fromDateStr}&till=${tillDateStr}&lang=ru&iss.meta=off&history.columns=TRADEDATE,CLOSE`
         )
         .then((r) => {
-          const dt = r.data.history.data.map((item) => ({
-            name: item[0],
-            uv: item[1],
-          }));
-          calcScatter(dt);
-          const rawData = r.data.history.data.map((item) => item[1]);
-          calcMedian(rawData);
-          console.log(data);
+          setData(
+            r.data.history.data.map((item) => ({
+              name: item[0],
+              uv: item[1],
+            }))
+          );
         });
     } else if (int === "minute") {
       axios
@@ -109,7 +107,6 @@ const SecGraph = ({ secId }) => {
               uv: item[1],
             }))
           );
-          console.log(r.data.candles.data);
         });
     } else if (int === "hour") {
       axios
@@ -123,7 +120,6 @@ const SecGraph = ({ secId }) => {
               uv: item[1],
             }))
           );
-          console.log(r.data.candles.data);
         });
     }
   };
@@ -185,7 +181,7 @@ const SecGraph = ({ secId }) => {
             stroke="#8884d8"
             dot={<></>}
           />
-          <Scatter data={data} dataKey="sc" fill="green" />
+          {/* <Scatter dataKey="sc" fill="green" /> */}
           <Brush data={data.map((item) => item.name)} height={10} />
         </ComposedChart>
       </ResponsiveContainer>
