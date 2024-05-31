@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from "react";
-import { DatePicker, Select } from "antd";
+import { useEffect, useState } from "react";
+import { DatePicker, Select, Checkbox, Dropdown, Space } from "antd";
 const { RangePicker } = DatePicker;
 import {
-  LineChart,
   Line,
   CartesianGrid,
   XAxis,
@@ -11,8 +10,6 @@ import {
   ResponsiveContainer,
   Brush,
   ReferenceLine,
-  ScatterChart,
-  Scatter,
   ComposedChart,
 } from "recharts";
 import axios from "axios";
@@ -26,6 +23,7 @@ const parseDate = (date) => {
   return y + "-" + (m <= 9 ? "0" + m : m) + "-" + (d <= 9 ? "0" + d : d);
 };
 
+// TODO: сделать колесико настройки граф
 const SecGraph = ({ secId }) => {
   const [fromDate, setFromDate] = useState();
   const [tillDate, setTillDate] = useState();
@@ -39,13 +37,17 @@ const SecGraph = ({ secId }) => {
   const [data, setData] = useState([]);
   const [interval, setInterval] = useState("day");
   const [median, setMedian] = useState(0);
-  const [scatter, setScatter] = useState([]);
+  const [medianVis, setMedianVis] = useState(false);
+  const [smaVis, setSmaVis] = useState(false);
+  const [rsiVis, setRsiVis] = useState(false);
 
   const options = [
     { value: "minute", label: "Минута" },
     { value: "hour", label: "Час" },
     { value: "day", label: "День" },
   ];
+
+  const dropdownOptions = [];
 
   const calcMedian = (rawData) => {
     const sortedPrices = [...rawData].sort((a, b) => a - b);
@@ -58,27 +60,53 @@ const SecGraph = ({ secId }) => {
     setMedian(median);
   };
 
-  const calcScatter = (prices) => {
-    const sortedPrices = [...prices].sort((a, b) => a - b);
-
-    const q1 = sortedPrices[Math.floor(sortedPrices.length / 4)];
-    const q3 = sortedPrices[Math.ceil(sortedPrices.length * (3 / 4)) - 1];
-    const iqr = q3 - q1;
-    const lowerBound = q1 - 1.5 * iqr;
-    const upperBound = q3 + 1.5 * iqr;
-
-    const sd = prices.map((d) => {
-      if (d.uv >= lowerBound || d.uv <= upperBound) {
-        d.sc = d.uv;
+  const calculateSMA = (dt, windowSize) => {
+    for (let i = 0; i < dt.length; i++) {
+      if (i < windowSize - 1) {
+        dt[i].sma = dt[i].uv;
+      } else {
+        let sum = 0;
+        for (let j = 0; j < windowSize; j++) {
+          sum += dt[i - j].uv;
+        }
+        let average = sum / windowSize;
+        dt[i].sma = average;
       }
-    });
-    console.log(data);
-    console.log(sd);
-    setData(sd);
-    // const outliers = prices.filter((d) => d >= lowerBound || d <= upperBound);
-    // setScatter(outliers);
-    // console.log(q1, q3, iqr, lowerBound, upperBound);
-    // console.log(outliers);
+    }
+    return dt;
+  };
+
+  const calculateRSI = (dt, windowSize) => {
+    let gains = 0;
+    let losses = 0;
+
+    for (let i = 1; i < windowSize; i++) {
+      const change = dt[i].uv - dt[i - 1].uv;
+      if (change > 0) {
+        gains += change;
+      } else {
+        losses -= change;
+      }
+    }
+
+    gains /= windowSize;
+    losses /= windowSize;
+    let rs = gains / losses;
+    dt[windowSize - 1].rsi = 100 - 100 / (1 + rs);
+    for (let i = windowSize; i < dt.length; i++) {
+      const change = dt[i].uv - dt[i - 1].uv;
+      if (change > 0) {
+        gains = (gains * (windowSize - 1) + change) / windowSize;
+        losses = (losses * (windowSize - 1)) / windowSize;
+      } else {
+        gains = (gains * (windowSize - 1)) / windowSize;
+        losses = (losses * (windowSize - 1) - change) / windowSize;
+      }
+      rs = gains / losses;
+      dt[i].rsi = 100 - 100 / (1 + rs);
+    }
+
+    return dt;
   };
 
   const fetchData = (int) => {
@@ -92,10 +120,11 @@ const SecGraph = ({ secId }) => {
             name: item[0],
             uv: item[1],
           }));
-          calcScatter(dt);
+          const dt1 = calculateSMA(dt, 3);
+          const dt2 = calculateRSI(dt1, 7);
+          setData(dt2);
           const rawData = r.data.history.data.map((item) => item[1]);
           calcMedian(rawData);
-          console.log(data);
         });
     } else if (int === "minute") {
       axios
@@ -103,13 +132,15 @@ const SecGraph = ({ secId }) => {
           `https://iss.moex.com/iss/engines/stock/markets/shares/securities/${secId}/candles.json?iss.reverse=true&from=${fromDateStr}&till=${tillDateStr}&interval=1&candles.columns=end,close&iss.meta=off`
         )
         .then((r) => {
-          setData(
-            r.data.candles.data.reverse().map((item) => ({
-              name: item[0].slice(11),
-              uv: item[1],
-            }))
-          );
-          console.log(r.data.candles.data);
+          const dt = r.data.candles.data.reverse().map((item) => ({
+            name: item[0].slice(11),
+            uv: item[1],
+          }));
+          const dt1 = calculateSMA(dt, 3);
+          const dt2 = calculateRSI(dt1, 4);
+          setData(dt2);
+          const rawData = r.data.candles.data.reverse().map((item) => item[1]);
+          calcMedian(rawData);
         });
     } else if (int === "hour") {
       axios
@@ -117,13 +148,15 @@ const SecGraph = ({ secId }) => {
           `https://iss.moex.com/iss/engines/stock/markets/shares/securities/${secId}/candles.json?from=${fromDateStr}&till=${tillDateStr}&interval=60&candles.columns=end,close&iss.meta=off`
         )
         .then((r) => {
-          setData(
-            r.data.candles.data.reverse().map((item) => ({
-              name: item[0].slice(11),
-              uv: item[1],
-            }))
-          );
-          console.log(r.data.candles.data);
+          const dt = r.data.candles.data.reverse().map((item) => ({
+            name: item[0].slice(11),
+            uv: item[1],
+          }));
+          const dt1 = calculateSMA(dt, 3);
+          const dt2 = calculateRSI(dt1, 4);
+          setData(dt2);
+          const rawData = r.data.candles.data.reverse().map((item) => item[1]);
+          calcMedian(rawData);
         });
     }
   };
@@ -137,7 +170,6 @@ const SecGraph = ({ secId }) => {
   }, []);
 
   const onDateChange = (date, dateString) => {
-    // console.log(date);
     setFromDate(date[0]);
     setTillDate(date[1]);
     setFromDateStr(dateString[0]);
@@ -171,21 +203,72 @@ const SecGraph = ({ secId }) => {
         />
         <RangePicker onChange={onDateChange} format={"YYYY-MM-DD"} />
       </div>
+      <div className="flex flex-row my-2 gap-x-2 items-center bg-slate-300 p-2 rounded-xl">
+        <Checkbox
+          onChange={(e) => {
+            setMedianVis(e.target.checked);
+          }}
+          className="text-xs"
+        >
+          Медиана
+        </Checkbox>
+        <Checkbox
+          onChange={(e) => {
+            setSmaVis(e.target.checked);
+          }}
+          className="text-xs"
+        >
+          Скользящая средняя
+        </Checkbox>
+        <Checkbox
+          onChange={(e) => {
+            setRsiVis(e.target.checked);
+          }}
+          className="text-xs"
+        >
+          Индекс относительной силы
+        </Checkbox>
+      </div>
       <ResponsiveContainer width={"100%"} height={400}>
-        <ComposedChart margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
+        <ComposedChart
+          margin={{ top: 5, right: 20, bottom: 5, left: 0 }}
+          data={data}
+        >
           <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
           <XAxis dataKey="name" />
-          <YAxis domain={["auto", "auto"]} />
-          <ReferenceLine y={median} stroke="red" />
+          <YAxis yAxisId="left" domain={["auto", "auto"]} />
+          <YAxis yAxisId="right" orientation="right" />
           <Tooltip content={CustomTooltip} />
           <Line
-            data={data}
+            yAxisId="left"
             type="monotone"
             dataKey="uv"
             stroke="#8884d8"
             dot={<></>}
           />
-          <Scatter data={data} dataKey="sc" fill="green" />
+          {medianVis && (
+            <ReferenceLine yAxisId="left" y={median} stroke="red" />
+          )}
+          {smaVis && (
+            <Line
+              type="monotone"
+              yAxisId="left"
+              dataKey="sma"
+              stroke="green"
+              dot={<></>}
+              strokeDasharray="5 5"
+            />
+          )}
+          {rsiVis && (
+            <Line
+              yAxisId="right"
+              type="monotone"
+              dataKey="rsi"
+              stroke="purple"
+              dot={<></>}
+              strokeDasharray="2 2"
+            />
+          )}
           <Brush data={data.map((item) => item.name)} height={10} />
         </ComposedChart>
       </ResponsiveContainer>

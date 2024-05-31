@@ -17,7 +17,6 @@ const Security = () => {
       )
       .then((r) => {
         setData(r.data.securities.data.filter((row) => row[1] == "TQBR")[0]);
-        // console.log(secData);
       });
   };
 
