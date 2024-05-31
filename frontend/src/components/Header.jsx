@@ -16,7 +16,7 @@ import {
 } from "@heroicons/react/20/solid";
 import { Link, NavLink, redirect, useNavigate } from "react-router-dom";
 
-function Header({ user, setter }) {
+function Header({ user, setter, balance}) {
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [curUser, setUser] = useState();
@@ -30,7 +30,7 @@ function Header({ user, setter }) {
   };
 
   useEffect(() => {
-    setUser(user);
+    setter(user);
   }, [user]);
 
   return (
@@ -166,6 +166,7 @@ function Header({ user, setter }) {
           )}
           {user && (
             <div className="flex flex-row items-center gap-x-3">
+              <div className="bg-slate-300 py-1 px-2 rounded-xl" >{balance} ₽</div>
               <NavLink
                 to={"/user"}
                 className="-mx-3 block rounded-lg px-3 py-1 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
@@ -238,13 +239,15 @@ function Header({ user, setter }) {
                     Войти
                   </NavLink>
                 )}
-                {user && (
+                {user && (<div>
+                  <div className="bg-slate-300 py-1 px-2 rounded-xl w-fit">{balance} ₽</div>
                   <NavLink
                     to={"/user"}
                     className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
                   >
                     {user.username}
                   </NavLink>
+                  </div>
                 )}
               </div>
             </div>

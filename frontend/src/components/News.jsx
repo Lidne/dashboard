@@ -1,5 +1,5 @@
 import { Spin } from "antd";
-import axios from "axios";
+import axios from "../utils/axios";
 import { useEffect, useState } from "react";
 
 const parseDate = (date) => {

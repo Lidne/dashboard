@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import MarqueeStock from "./MarqueeStock";
 import Marquee from "react-fast-marquee";
-import axios from "axios";
+import axios from "../utils/axios";
 
 const Tops = () => {
   const [tops, setTops] = useState([]);

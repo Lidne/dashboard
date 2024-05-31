@@ -1,7 +1,7 @@
 import React from "react";
 import { Button, Checkbox, Form, Input } from "antd";
 import { NavLink, redirect, useNavigate } from "react-router-dom";
-import axios from "axios";
+import axios from "../utils/axios";
 
 const LoginForm = ({ setter }) => {
   const navigate = useNavigate();
@@ -13,6 +13,7 @@ const LoginForm = ({ setter }) => {
         const userStr = JSON.stringify(r.data);
         localStorage.setItem("user", userStr);
         setter(r.data);
+        console.log(r);
 
         navigate("/");
       })
@@ -69,18 +70,6 @@ const LoginForm = ({ setter }) => {
       >
         <Input.Password />
       </Form.Item>
-
-      <Form.Item
-        name="remember"
-        valuePropName="checked"
-        wrapperCol={{
-          offset: 8,
-          span: 16,
-        }}
-      >
-        <Checkbox>Запомнить меня</Checkbox>
-      </Form.Item>
-
       <Form.Item
         wrapperCol={{
           offset: 8,
