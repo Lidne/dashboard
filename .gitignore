@@ -1,6 +1,8 @@
 __pycache__
+*.lock
 .mypy_cache
 .vscode
+.env
 # Logs
 logs
 *.log

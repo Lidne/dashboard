@@ -12,7 +12,7 @@ import {
   ReferenceLine,
   ComposedChart,
 } from "recharts";
-import axios from "axios";
+import axios from "../utils/axios";
 
 const parseDate = (date) => {
   // говнокодик)

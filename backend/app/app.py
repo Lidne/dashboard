@@ -1,27 +1,19 @@
-import os
-import sys
 from typing import Union
 
+from fastapi import Depends, FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi import Depends, FastAPI
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from backend.app.authentication.auth import (
-    register,
-    cookies,
-    get_user_token,
-    auth,
-    logout,
-    cookie_check,
-)
+from backend.app.authentication.auth import (auth, cookie_check, cookies,
+                                             get_user, get_user_token, logout,
+                                             register)
 from backend.app.authentication.token import decodeJWT
-from backend.app.portfolio.shares_operations import buy, sell, get_user_shares
+from backend.app.parsing_news import news_list
+from backend.app.portfolio.shares_operations import (buy, get_user_balance,
+                                                     get_user_shares, sell)
+from backend.app.send_EMAIL import send_email
 from backend.models import schema
 from backend.models.database import get_session
-
-sys.path.insert(0, os.path.join(os.getcwd(), "backend", "app"))
-from parsing_news import news_list
-from send_EMAIL import send_email
 
 app = FastAPI()
 
@@ -48,8 +40,15 @@ async def register_user(
 
 
 @app.get("/get_user_info_by_token")
-async def get_user(token=Depends(get_user_token)):
-    return decodeJWT(token)
+async def get_user(token=Depends(get_user)):
+    try:
+        return decodeJWT(token)
+    except Exception:
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid authentication credentials",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
 
 
 @app.post("/account/login")
@@ -90,6 +89,11 @@ async def sell_shares(
 @app.get("/portfolio/shares")
 async def get_shares(token=Depends(get_user_token), db: AsyncSession = Depends(get_session)):
     return await get_user_shares(token, db)
+
+
+@app.get("/portfolio/balance")
+async def get_balance(token=Depends(get_user_token), db: AsyncSession = Depends(get_session)):
+    return await get_user_balance(token, db)
 
 
 @app.get("/news")

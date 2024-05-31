@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Dialog, Disclosure, Popover } from "@headlessui/react";
 import {
   ArrowPathIcon,
@@ -14,51 +14,24 @@ import {
   PhoneIcon,
   PlayCircleIcon,
 } from "@heroicons/react/20/solid";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, redirect, useNavigate } from "react-router-dom";
 
-const products = [
-  {
-    name: "Analytics",
-    description: "Get a better understanding of your traffic",
-    href: "#",
-    icon: ChartPieIcon,
-  },
-  {
-    name: "Engagement",
-    description: "Speak directly to your customers",
-    href: "#",
-    icon: CursorArrowRaysIcon,
-  },
-  {
-    name: "Security",
-    description: "Your customers' data will be safe and secure",
-    href: "#",
-    icon: FingerPrintIcon,
-  },
-  {
-    name: "Integrations",
-    description: "Connect with third-party tools",
-    href: "#",
-    icon: SquaresPlusIcon,
-  },
-  {
-    name: "Automations",
-    description: "Build strategic funnels that will convert",
-    href: "#",
-    icon: ArrowPathIcon,
-  },
-];
-const callsToAction = [
-  { name: "Watch demo", href: "#", icon: PlayCircleIcon },
-  { name: "Contact sales", href: "#", icon: PhoneIcon },
-];
-
-function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
-}
-
-function Header() {
+function Header({ user, setter, balance}) {
+  const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [curUser, setUser] = useState();
+
+  const logout = () => {
+    document.cookie =
+      "auth_token" + "=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;";
+    localStorage.clear();
+    setter(null);
+    navigate("/");
+  };
+
+  useEffect(() => {
+    setter(user);
+  }, [user]);
 
   return (
     <header className="bg-white">
@@ -180,10 +153,31 @@ function Header() {
             О нас
           </NavLink>
         </Popover.Group>
-        <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-          <a href="#" className="text-sm font-semibold leading-6 text-gray-900">
-            Войти <span aria-hidden="true">&rarr;</span>
-          </a>
+        <div className="hidden lg:flex lg:flex-1 lg:justify-end gap-x-4 items-center">
+          {!user && (
+            <div>
+              <NavLink
+                to={"/login"}
+                className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+              >
+                Войти
+              </NavLink>
+            </div>
+          )}
+          {user && (
+            <div className="flex flex-row items-center gap-x-3">
+              <div className="bg-slate-300 py-1 px-2 rounded-xl" >{balance} ₽</div>
+              <NavLink
+                to={"/user"}
+                className="-mx-3 block rounded-lg px-3 py-1 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+              >
+                {user.username}
+              </NavLink>
+              <button onClick={logout}>
+                <img className="size-7" src="logout.svg" alt="" />
+              </button>
+            </div>
+          )}
         </div>
       </nav>
       <Dialog
@@ -197,7 +191,7 @@ function Header() {
           <div className="flex items-center justify-between">
             <a href="#" className="-m-1.5 p-1.5">
               <span className="sr-only">Your Company</span>
-              <img className="h-8 w-auto" src="logo.svg" alt="" />
+              <img className="h-8 w-auto" src="white-theme-2.svg" alt="" />
             </a>
             <button
               type="button"
@@ -211,60 +205,50 @@ function Header() {
           <div className="mt-6 flow-root">
             <div className="-my-6 divide-y divide-gray-500/10">
               <div className="space-y-2 py-6">
-                <Disclosure as="div" className="-mx-3">
-                  {({ open }) => (
-                    <>
-                      <Disclosure.Button className="flex w-full items-center justify-between rounded-lg py-2 pl-3 pr-3.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">
-                        Product
-                        <ChevronDownIcon
-                          className={classNames(
-                            open ? "rotate-180" : "",
-                            "h-5 w-5 flex-none"
-                          )}
-                          aria-hidden="true"
-                        />
-                      </Disclosure.Button>
-                      <Disclosure.Panel className="mt-2 space-y-2">
-                        {[...products, ...callsToAction].map((item) => (
-                          <Disclosure.Button
-                            key={item.name}
-                            as="a"
-                            href={item.href}
-                            className="block rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-                          >
-                            {item.name}
-                          </Disclosure.Button>
-                        ))}
-                      </Disclosure.Panel>
-                    </>
-                  )}
-                </Disclosure>
-                <a
-                  href="#"
+                <NavLink
+                  to={"/"}
                   className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
                 >
-                  Features
-                </a>
-                <a
-                  href="#"
+                  Главная
+                </NavLink>
+                <NavLink
+                  to={"/securities"}
                   className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
                 >
-                  Marketplace
-                </a>
-                <a
-                  href="#"
+                  Акции
+                </NavLink>
+                <NavLink
+                  to={"/news"}
                   className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
                 >
-                  Company
-                </a>
+                  Новости
+                </NavLink>
+                <NavLink
+                  to={"/about"}
+                  className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                >
+                  О нас
+                </NavLink>
               </div>
               <div className="py-6">
-                <a
-                  href="#"
-                  className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-                >
-                  Log in
-                </a>
+                {!user && (
+                  <NavLink
+                    to={"/login"}
+                    className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                  >
+                    Войти
+                  </NavLink>
+                )}
+                {user && (<div>
+                  <div className="bg-slate-300 py-1 px-2 rounded-xl w-fit">{balance} ₽</div>
+                  <NavLink
+                    to={"/user"}
+                    className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                  >
+                    {user.username}
+                  </NavLink>
+                  </div>
+                )}
               </div>
             </div>
           </div>

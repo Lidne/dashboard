@@ -1,13 +1,13 @@
-from fastapi import HTTPException, Response, Request
+from fastapi import HTTPException, Request, Response
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.responses import JSONResponse
 from starlette.status import HTTP_400_BAD_REQUEST
 
+from backend.app.authentication.sec import pwd_context
 from backend.app.authentication.token import signJWT
 from backend.models.models import User
 from backend.models.schema import UserCreate, UserLogin
-from backend.app.authentication.sec import pwd_context
 
 
 def cookies(user_data):
@@ -47,6 +47,11 @@ async def register(db: AsyncSession, user_data: UserCreate):
     }
 
 
+def get_user(request: Request):
+    """Получение куки"""
+    return request.cookies.get("auth_token")
+
+
 def get_user_token(request: Request):
     """Получение куки"""
     return request.cookies.get("auth_token")
@@ -76,6 +81,8 @@ async def auth(db: AsyncSession, user_data: UserLogin):
             "is_admin": user.is_admin,
             "is_verified": user.is_verified,
             "is_active": user.is_active,
+            "purchased_shares": user.purchased_shares,
+            "balance": user.balance
         }
         return cookies(info)
 
