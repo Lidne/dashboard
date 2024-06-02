@@ -94,7 +94,7 @@ async def get_user_shares(token, db: AsyncSession):
 
 
 async def get_user_balance(token, db: AsyncSession):
-    """Получить акции, которыми владеет пользователь"""
+    """Получить баланс пользователя"""
     user_info = decodeJWT(token)
     user = await db.scalar(select(User).where(User.email == user_info["email"]))
     return {"balance": user.balance}
