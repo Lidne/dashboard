@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
-import axios from "axios";
+import axios from "../utils/axios";
 
 const stocks = [
   {
@@ -40,7 +40,6 @@ const Securities = () => {
         "https://iss.moex.com/iss/engines/stock/markets/shares/securities.json"
       )
       .then((r) => {
-        console.log(r.data.securities.data);
         setSec(r.data.securities.data);
       });
   };
