@@ -82,7 +82,7 @@ async def auth(db: AsyncSession, user_data: UserLogin):
             "is_verified": user.is_verified,
             "is_active": user.is_active,
             "purchased_shares": user.purchased_shares,
-            "balance": user.balance
+            "balance": user.balance,
         }
         return cookies(info)
 

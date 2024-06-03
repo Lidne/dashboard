@@ -1,5 +1,6 @@
-from dotenv import load_dotenv
 import os
+
+from dotenv import load_dotenv
 
 load_dotenv()
 
@@ -11,3 +12,6 @@ DB_PASS = os.environ.get("DB_PASS")
 
 SECRET_AUTH = os.environ.get("SECRET_AUTH")
 SECRET_ALGORYTHM = os.environ.get("SECRET_ALGORYTHM")
+
+MAIL = os.environ.get("MAIL")
+PASS = os.environ.get("PASS")

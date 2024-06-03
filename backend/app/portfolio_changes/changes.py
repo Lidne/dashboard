@@ -1,4 +1,5 @@
 from datetime import datetime
+
 import pytz
 import requests
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -8,7 +9,7 @@ from backend.app.portfolio.shares_operations import get_user_shares
 
 def get_time():
     """Функция, которая проверяет окончание торговой сессии"""
-    moscow_tz = pytz.timezone('Europe/Moscow')
+    moscow_tz = pytz.timezone("Europe/Moscow")
     now_moscow = datetime.now(moscow_tz)
     target_time = now_moscow.replace(hour=19, minute=0, second=0, microsecond=0)
     if now_moscow == target_time:

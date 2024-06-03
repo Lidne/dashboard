@@ -1,13 +1,15 @@
 import smtplib
-from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+
+from backend.config import MAIL, PASS
 
 
 def send_email(recipient, text=None, template=None):
     """отправка сообщения на EMAIL"""
     # почта нашего проекта
-    sender = "2clashoflegend2@gmail.com"
-    password = "wvzf xiyk fmvs cavh"
+    sender = MAIL
+    password = PASS
 
     server = smtplib.SMTP("smtp.gmail.com", 587)
     server.starttls()
@@ -39,3 +41,7 @@ def send_email(recipient, text=None, template=None):
         return "The message was sent successfully!"
     except Exception as _ex:
         return f"{_ex}\nCheck your login or password please!"
+
+
+a = send_email("rusnakkaleksandr@gmail.com", "ПРИВЕТ", "email_template_1.html")
+print(a)
