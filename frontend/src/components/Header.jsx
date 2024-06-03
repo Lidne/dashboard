@@ -174,7 +174,7 @@ function Header({ user, setter, balance}) {
                 {user.username}
               </NavLink>
               <button onClick={logout}>
-                <img className="size-7" src="logout.svg" alt="" />
+                <img className="size-7" src="../public/logout.svg" alt="" />
               </button>
             </div>
           )}

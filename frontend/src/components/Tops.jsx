@@ -8,7 +8,7 @@ const Tops = () => {
 
   const fetchTops = () => {
     const date = new Date();
-    date.setDate(date.getDate() - 1);
+    date.setDate(date.getDate() - 3);
     axios
       .get(
         "https://iss.moex.com/iss/history/engines/stock/markets/shares/securities.json?date=" +
@@ -16,6 +16,7 @@ const Tops = () => {
       )
       .then((r) => {
         setTops(r.data.history.data);
+        console.log(r.data.history.data);
       });
   };
 

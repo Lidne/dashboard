@@ -9,8 +9,11 @@ from backend.app.authentication.auth import (auth, cookie_check, cookies,
                                              register)
 from backend.app.authentication.token import decodeJWT
 from backend.app.parsing_news import news_list
-from backend.app.portfolio.shares_operations import (buy, get_user_balance,
+from backend.app.portfolio.shares_operations import (buy, get_stock_info,
+                                                     get_user_balance,
+                                                     get_user_favorites,
                                                      get_user_shares, sell)
+from backend.app.RSI import calculate_rsi
 from backend.app.send_EMAIL import send_email
 from backend.models import schema
 from backend.models.database import get_session
@@ -96,10 +99,25 @@ async def get_balance(token=Depends(get_user_token), db: AsyncSession = Depends(
     return await get_user_balance(token, db)
 
 
+@app.get("/portfolio/follow")
+async def get_follow(token=Depends(get_user_token), db: AsyncSession = Depends(get_session)):
+    return await get_user_favorites(token, db)
+
+
+@app.get("/share_info/{tiker}")
+async def get_stock(tiker: str):
+    return get_stock_info(tiker)
+
+
 @app.get("/news")
 async def new_list(from_: str, to_: str = "") -> dict[str, list[dict]]:
     dict_news = {"NEWS": news_list(from_, to_)}
     return dict_news
+
+
+@app.get("/graphs/rsi")
+async def rsi(tiker: str, fromdate: str, tilldate: str, interval: str, period: int):
+    return calculate_rsi(tiker, fromdate, tilldate, interval, period)
 
 
 @app.post("/email")

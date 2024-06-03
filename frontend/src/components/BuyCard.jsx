@@ -33,7 +33,7 @@ const BuyCard = ({ price, secId, updateBalance }) => {
       .get("http://localhost/portfolio/shares", { withCredentials: true })
       .then((r) => {
         if (!r.data[secId]) setNumPortfolio(0);
-        else setNumPortfolio(r.data[secId]);
+        else setNumPortfolio(r.data[secId].amount);
       })
       .catch(() => {
         openNotification();
