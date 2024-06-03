@@ -9,7 +9,9 @@ from backend.app.authentication.auth import (auth, cookie_check, cookies,
                                              register)
 from backend.app.authentication.token import decodeJWT
 from backend.app.parsing_news import news_list
-from backend.app.portfolio.shares_operations import (buy, get_user_balance,
+from backend.app.portfolio.shares_operations import (buy, get_stock_info,
+                                                     get_user_balance,
+                                                     get_user_favorites,
                                                      get_user_shares, sell)
 from backend.app.send_EMAIL import send_email
 from backend.models import schema
@@ -95,6 +97,16 @@ async def get_shares(token=Depends(get_user_token), db: AsyncSession = Depends(g
 @app.get("/portfolio/balance")
 async def get_balance(token=Depends(get_user_token), db: AsyncSession = Depends(get_session)):
     return await get_user_balance(token, db)
+
+
+@app.get("/portfolio/follow")
+async def get_follow(token=Depends(get_user_token), db: AsyncSession = Depends(get_session)):
+    return await get_user_favorites(token, db)
+
+
+@app.get("/share_info/{tiker}")
+async def get_stock(tiker: str):
+    return get_stock_info(tiker)
 
 
 @app.get("/news")

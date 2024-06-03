@@ -1,7 +1,7 @@
 import Header from "./components/Header.jsx";
 import Home from "./pages/Home.jsx";
 import Security from "./pages/Security.jsx";
-import NewsPage from "./pages/NewsPage.jsx";
+import NewsPage from "./pages/News2.jsx";
 import Securities from "./pages/Securities.jsx";
 import Auth from "./pages/Auth.jsx";
 import Registration from "./pages/Registration.jsx";
@@ -26,7 +26,7 @@ function App() {
         const userStr = JSON.stringify(r.data);
         localStorage.setItem("user", userStr);
         setUser(r.data);
-        console.log(r.data);
+        // console.log(r.data);
       });
     } catch (error) {
       setUser(null);
@@ -65,7 +65,7 @@ function App() {
           path="/registration"
           element={<Registration setter={setUser} />}
         />
-        <Route path="/user" element={<UserProfile user={user} />} />
+        <Route path="/user" element={<UserProfile />} />
       </Routes>
     </>
   );
