@@ -52,13 +52,17 @@ def news_list(from_data=None, to_data="", count_new=0) -> list[dict]:
                 block_data = block_3.find_all("td")[0]
                 # добавление новости без ссылки
                 if not block_4.find("a"):
-                    news.append({"data": block_data.text, "title": block_4.text.strip(), "link": ""})
+                    news.append(
+                        {"data": block_data.text, "title": block_4.text.strip(), "link": ""}
+                    )
                     count += 1
                     continue
                 # добавление новости с ссылкой
                 link_new = block_4.find("a").get("href")
                 text_new = block_4.find("a").text
-                news.append({"data": block_data.text, "title": text_new, "link": link_main + link_new})
+                news.append(
+                    {"data": block_data.text, "title": text_new, "link": link_main + link_new}
+                )
                 count += 1
             else:
                 stop = 1
