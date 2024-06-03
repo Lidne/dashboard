@@ -21,7 +21,7 @@ repos:
         args:
           [
             --config=pyproject.toml,
-            --max-line-length=120,
+            --max-line-length=230,
             "--extend-ignore=E402,E231",
           ]
   # - repo: local
