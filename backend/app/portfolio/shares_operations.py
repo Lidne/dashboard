@@ -54,7 +54,7 @@ async def sell(token, db: AsyncSession, ticker: str, input_schema: SharesOperati
     amount = input_schema.amount
     user_info = decodeJWT(token)
     share_info = get_stock_info(ticker)
-    price = share_info[0] * share_info[1] * amount
+    price = share_info["price"] * share_info["lotsize"] * amount
     user = await db.scalar(select(User).where(User.email == user_info["email"]))
     balance = user.balance
     shares_dict = user.purchased_shares
@@ -93,8 +93,8 @@ async def get_user_shares(token, db: AsyncSession):
         r = requests.get(url).json()
         shares_dict[key] = {
             "amount": user_shares[key],
-            "price": r["securities"]["data"][1][1],
-            "shortname": r["securities"]["data"][1][0],
+            "price": r["securities"]["data"][0][1],
+            "shortname": r["securities"]["data"][0][0],
         }
 
     if shares_dict is None:

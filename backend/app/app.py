@@ -13,10 +13,10 @@ from backend.app.portfolio.shares_operations import (buy, get_stock_info,
                                                      get_user_balance,
                                                      get_user_favorites,
                                                      get_user_shares, sell)
+from backend.app.RSI import calculate_rsi
 from backend.app.send_EMAIL import send_email
 from backend.models import schema
 from backend.models.database import get_session
-from backend.RSI import calculate_rsi
 
 app = FastAPI()
 

@@ -1,9 +1,11 @@
 import { React, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { notification } from "antd";
 import { StarIcon } from "@heroicons/react/20/solid";
 import axios from "axios";
 
 const UserProfile = () => {
+  const [api, contextHolder] = notification.useNotification();
   const [user, setUser] = useState(null);
   const [portfolio, setPortfolio] = useState(null);
   const [balance, setBalance] = useState(0);

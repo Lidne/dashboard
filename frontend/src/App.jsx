@@ -50,12 +50,12 @@ function App() {
 
   return (
     <>
-      <Header user={user} setter={setUser} balance={balance}/>
+      <Header user={user} setter={setUser} balance={balance} />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route
           path="/security/:secId"
-          element={<Security updateBalance={updateBalance}  />}
+          element={<Security updateBalance={updateBalance} />}
         />
         <Route path="/securities" element={<Securities />} />
         <Route path="/news" element={<NewsPage />} />
