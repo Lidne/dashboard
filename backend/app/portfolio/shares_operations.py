@@ -17,7 +17,7 @@ def get_stock_info(ticker):
     response = requests.get(url)
     price = response.json()["marketdata"]["data"][0][12]
     lotsize = response.json()["securities"]["data"][0][4]
-    return price, lotsize
+    return {"price": price, "lotsize": lotsize}
 
 
 async def buy(token, db: AsyncSession, ticker: str, input_schema: SharesOperations):
@@ -25,7 +25,7 @@ async def buy(token, db: AsyncSession, ticker: str, input_schema: SharesOperatio
     amount = input_schema.amount
     user_info = decodeJWT(token)
     share_info = get_stock_info(ticker)
-    price = share_info[0] * share_info[1] * amount
+    price = share_info["price"] * share_info["lotsize"] * amount
     user = await db.scalar(select(User).where(User.email == user_info["email"]))
     balance = user.balance
     # проверка на то, хватает ли пользователю денег для покупки
@@ -86,15 +86,32 @@ async def get_user_shares(token, db: AsyncSession):
     """Получить акции, которыми владеет пользователь"""
     user_info = decodeJWT(token)
     user = await db.scalar(select(User).where(User.email == user_info["email"]))
-    shares_dict = user.purchased_shares
+    shares_dict = {}
+    user_shares = json.loads(user.purchased_shares)
+    for key in user_shares:
+        url = f"https://iss.moex.com/iss/engines/stock/markets/shares/securities/{key}.json?iss.meta=off&securities.columns=SHORTNAME,PREVPRICE"
+        r = requests.get(url).json()
+        shares_dict[key] = {
+            "amount": user_shares[key],
+            "price": r["securities"]["data"][1][1],
+            "shortname": r["securities"]["data"][1][0],
+        }
+
     if shares_dict is None:
         return "User has no shares"
     else:
-        return json.loads(shares_dict)
+        return shares_dict
 
 
 async def get_user_balance(token, db: AsyncSession):
-    """Получить акции, которыми владеет пользователь"""
+    """Получить баланс пользователя"""
     user_info = decodeJWT(token)
     user = await db.scalar(select(User).where(User.email == user_info["email"]))
     return {"balance": user.balance}
+
+
+async def get_user_favorites(token, db: AsyncSession):
+    """Получить акции, которые отслеживает пользователь"""
+    user_info = decodeJWT(token)
+    user = await db.scalar(select(User).where(User.email == user_info["email"]))
+    return {"follow": user.follow}
