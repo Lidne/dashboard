@@ -2,9 +2,10 @@ import requests
 from bs4 import BeautifulSoup
 
 
-def news_list(from_data=None, to_data=""):
+def news_list(from_data=None, to_data="", count_new=0) -> list[dict]:
     """возвращает словарь списков новостей (название и ссылку)"""
-
+    count = 1
+    stop = 0
     news = []
     count_page = 0
     number_page = 1
@@ -36,6 +37,8 @@ def news_list(from_data=None, to_data=""):
 
     # проход по всем страницам и добавление всех новостей в словарь
     for i in range(count_page):
+        if stop == 1:
+            break
         link = f"https://smart-lab.ru/calendar/index/country_0/from_{from_data}{to_data}/page{number_page}/"
         responce = requests.get(link).text
         soup = BeautifulSoup(responce, "lxml")
@@ -43,16 +46,23 @@ def news_list(from_data=None, to_data=""):
         block_2 = block.find("table", class_="simple-little-table trades-table events")
         len_new = block_2.find_all("tr")
         for j in range(1, len(len_new)):
-            block_3 = block_2.find_all("tr")[j]
-            block_4 = block_3.find_all("td")[2]
-            # добавление новости без ссылки
-            if not block_4.find("a"):
-                news.append({"title": block_4.text.strip(), "link": ""})
-                continue
-            # добавление новости с ссылкой
-            link_new = block_4.find("a").get("href")
-            text_new = block_4.find("a").text
-            news.append({"title": text_new, "link": link_main + link_new})
+            if (count <= count_new) or (count_new == 0):
+                block_3 = block_2.find_all("tr")[j]
+                block_4 = block_3.find_all("td")[2]
+                block_data = block_3.find_all("td")[0]
+                # добавление новости без ссылки
+                if not block_4.find("a"):
+                    news.append({"data": block_data.text, "title": block_4.text.strip(), "link": ""})
+                    count += 1
+                    continue
+                # добавление новости с ссылкой
+                link_new = block_4.find("a").get("href")
+                text_new = block_4.find("a").text
+                news.append({"data": block_data.text, "title": text_new, "link": link_main + link_new})
+                count += 1
+            else:
+                stop = 1
+                break
         number_page += 1
     return news
 

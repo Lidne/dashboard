@@ -5,6 +5,7 @@ version = "0.1"
 description = "Project for monitoring finances"
 authors = ["Lidne <play.gt.play@yandex.ru>"]
 readme = "README.md"
+packages = [{include = "backend"}]
 
 [tool.poetry.dependencies]
 python = "3.12.2"
@@ -30,6 +31,9 @@ fastapi-mail = "^1.4.1"
 python-dotenv = "^1.0.1"
 types-beautifulsoup4 = "^4.12.0.20240229"
 
+[tool.poetry.scripts]
+server = "backend.server:start"
+
 [tool.mypy]
 mypy_path = "./src"
 strict_optional = true
@@ -41,6 +45,7 @@ no_implicit_reexport = true
 
 [tool.flake8]
 max-line-length = 100
+extend-ignore="E402"
 
 [tool.black]
 line-length = 100
