@@ -14,6 +14,7 @@ from backend.app.portfolio.shares_operations import (buy, get_user_balance,
 from backend.app.send_EMAIL import send_email
 from backend.models import schema
 from backend.models.database import get_session
+from backend.RSI import calculate_rsi
 
 app = FastAPI()
 
@@ -100,6 +101,11 @@ async def get_balance(token=Depends(get_user_token), db: AsyncSession = Depends(
 async def new_list(from_: str, to_: str = "") -> dict[str, list[dict]]:
     dict_news = {"NEWS": news_list(from_, to_)}
     return dict_news
+
+
+@app.get("/graphs/rsi")
+async def rsi(tiker: str, fromdate: str, tilldate: str, interval: str, period: int):
+    return calculate_rsi(tiker, fromdate, tilldate, interval, period)
 
 
 @app.post("/email")
