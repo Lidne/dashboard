@@ -1,2 +1,10 @@
-# dashboard
-Dashboard for monitoring stock market
+# StockView
+
+Группа: М80-101Б-23
+Состав команды:
+- Ермеков Георгий - тимлид, frontend
+- Руснак Александр - backend
+- Маврин Иван - backend
+- Ярусов Ярослав - frontend
+
+## Инструкция по запуску:
