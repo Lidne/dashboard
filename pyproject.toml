@@ -1,0 +1,67 @@
+[tool.poetry]
+package-mode = false
+name = "dashboard"
+version = "0.1"
+description = "Project for monitoring finances"
+authors = ["Lidne <play.gt.play@yandex.ru>"]
+readme = "README.md"
+packages = [{include = "backend"}]
+
+[tool.poetry.dependencies]
+python = "3.12.2"
+fastapi = "^0.110.1"
+sqlalchemy = "^2.0.29"
+uvicorn = "^0.29.0"
+flake8 = "^7.0.0"
+black = "^24.3.0"
+requests = "^2.31.0"
+bs4 = "^0.0.2"
+lxml = "^5.2.1"
+mypy = "^1.9.0"
+types-requests = "^2.31.0.20240406"
+fastapi-users = {extras = ["oauth", "sqlalchemy"], version = "^13.0.0"}
+asyncpg = "^0.29.0"
+alembic = "^1.13.1"
+psycopg2 = "^2.9.9"
+pyjwt = {extras = ["crypto"], version = "^2.8.0"}
+python-jose = {extras = ["cryptography"], version = "^3.3.0"}
+passlib = {extras = ["bcrypt"], version = "^1.7.4"}
+python-multipart = "^0.0.9"
+fastapi-mail = "^1.4.1"
+python-dotenv = "^1.0.1"
+types-beautifulsoup4 = "^4.12.0.20240229"
+pytz = "^2024.1"
+
+[tool.poetry.scripts]
+server = "backend.server:start"
+
+[tool.mypy]
+mypy_path = "./src"
+strict_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+disallow_any_generics = true
+check_untyped_defs = true
+no_implicit_reexport = true
+
+[tool.flake8]
+max-line-length = 100
+extend-ignore="E402"
+
+[tool.black]
+line-length = 100
+
+[tool.pytest.ini_options]
+addopts = ["--import-mode=importlib"]
+pythonpath = "src"
+
+[tool.poetry.group.dev.dependencies]
+flake8 = "^7.0.0"
+pre-commit = "^3.7.0"
+black = "^24.3.0"
+mypy = "^1.9.0"
+setuptools = "^69.2.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
